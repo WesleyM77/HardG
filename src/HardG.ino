@@ -18,7 +18,47 @@
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 AnimatedGIF gif;
 
+const int trigPin =  12;
+
+void setup(void) {
+  Serial.begin(9600);
+
+  // init ST7789 240x135
+  tft.init(DISPLAY_HEIGHT, DISPLAY_WIDTH);
+  // rotate 1 or 3 for horizontal
+  tft.setRotation(3);
+
+  pinMode(trigPin, INPUT);
+
+  debug("Unlease the cat?!");
+  delay(1000);
+  
+  tft.fillScreen(ST77XX_BLACK);
+  gif.begin(LITTLE_ENDIAN_PIXELS);
+  gif.open((uint8_t *)bongoCat_gif, sizeof(bongoCat_gif), GIFDraw);
+  attachInterrupt(digitalPinToInterrupt(trigPin), nextFrame, RISING);
+}
+
+void loop() {
+  //Empty because we're using an interrupt
+}
+
+void nextFrame()
+{
+  gif.playFrame(true, NULL);
+}
+
+void debug(char *text) {
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextWrap(true);
+  tft.print(text);
+}
+
 // Draw a line of image directly on the LCD
+// Required by library to be defined for gif playback
+// A direct copy of the code from the AnimatedGif library
 void GIFDraw(GIFDRAW *pDraw)
 {
     uint8_t *s;
@@ -105,53 +145,4 @@ void GIFDraw(GIFDRAW *pDraw)
       tft.writePixels(usTemp, iWidth, false, false);
       tft.endWrite();
     }
-} /* GIFDraw() */
-
-const int trigPin =  12;
-
-void setup(void) {
-  Serial.begin(9600);
-
-  // using a 1.14" 240x135 TFT:
-  tft.init(135, 240);           // Init ST7789 240x135
-  // rotate 1 or 3 for horizontal
-  tft.setRotation(3);
-
-  pinMode(trigPin, INPUT);
-
-  debug("Unlease the cat!");
-  delay(1000);
-  
-  tft.fillScreen(ST77XX_BLACK);
-  gif.begin(LITTLE_ENDIAN_PIXELS);
-}
-
-bool lastWasHigh = false;
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  if (gif.open((uint8_t *)bongoCat_gif, sizeof(bongoCat_gif), GIFDraw))
-  {
-    while (true)
-    {      
-      if(digitalRead(trigPin) == HIGH && !lastWasHigh)
-      {
-        gif.playFrame(true, NULL);
-        lastWasHigh = true;
-      }
-      else if(digitalRead(trigPin) == LOW)
-      {
-        lastWasHigh = false;
-      }
-    }
-    gif.close();
-  }
-}
-
-void debug(char *text) {
-  tft.fillScreen(ST77XX_BLACK);
-  tft.setCursor(0, 0);
-  tft.setTextColor(ST77XX_WHITE);
-  tft.setTextWrap(true);
-  tft.print(text);
 }
