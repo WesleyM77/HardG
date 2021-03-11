@@ -6,3 +6,6 @@ Teensy 3.2 powered by eurorack 5v, connected to Adafruit 1.14" 240x135 Color TFT
 
 ## Library Usage
 [AnimatedGif](https://github.com/bitbank2/AnimatedGIF)
+
+## GIF Credits
+Rogue - [Ko-fi](https://ko-fi.com/arogue/) / [Twitter](https://twitter.com/StrayRogue)
