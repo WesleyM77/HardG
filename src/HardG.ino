@@ -1,7 +1,6 @@
 #include <AnimatedGIF.h>
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include "C:/Users/Shado/Documents/Arduino/images/bongo.h"
 #include <SPI.h>
